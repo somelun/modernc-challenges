@@ -9,9 +9,10 @@ void bubble_sort(uint32_t array[]);
 void merge_sort(uint32_t array[], uint32_t left, uint32_t right);
 void quick_sort(uint32_t array[], uint32_t low, uint32_t high);
 
-void merge(uint32_t arr[], uint32_t l, uint32_t m, uint32_t r);
+void merge(uint32_t array[], uint32_t left, uint32_t middle, uint32_t right);
+uint32_t partition(uint32_t array[], uint32_t low, uint32_t high);
 
-void swap(uint32_t array[], uint32_t a, uint32_t b);
+void swap(uint32_t* a, uint32_t* b);
 void print_array(uint32_t array[]);
 bool is_sorted(uint32_t array[]);
 
@@ -26,7 +27,8 @@ int main(int argc, char* argv[argc + 1]) {
 
 
   // bubble_sort(array);
-  merge_sort(array, 0, ArraySize - 1);
+  // merge_sort(array, 0, ArraySize - 1);
+  quick_sort(array, 0, ArraySize - 1);
   print_array(array);
 
   if (is_sorted(array)) {
@@ -49,7 +51,7 @@ void bubble_sort(uint32_t array[]) {
     for (int j = 0; j < ArraySize - i - 1; ++j) {
       it++;
       if (array[j] > array[j + 1]) {
-        swap(array, j, j + 1);
+        swap(&array[j], &array[j + 1]);
         swapped = true;
       }
     }
@@ -57,8 +59,6 @@ void bubble_sort(uint32_t array[]) {
       break;
     }
   }
-
-  printf("it: %d\n", it);
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -114,17 +114,38 @@ void merge(uint32_t array[], uint32_t l, uint32_t m, uint32_t r)
 /// Quicksort
 
 void quick_sort(uint32_t array[], uint32_t low, uint32_t high) {
-  //
+  if (low < high) {
+    uint32_t pivot = partition(array, low, high);
+
+    quick_sort(array, low, pivot - 1);
+    quick_sort(array, pivot + 1, high);
+  }
+}
+
+uint32_t partition(uint32_t array[], uint32_t low, uint32_t high) {
+  uint32_t pivot = array[high];
+
+  uint32_t i = (low - 1);
+
+  for (uint32_t j = low; j <= high - 1; ++j) {
+    if (array[j] < pivot) {
+      i++;
+      swap(&array[i], &array[j]);
+    }
+  }
+  swap(&array[i + 1], &array[high]);
+  return (i + 1);
 }
 
 /////////////////////////////////////////////////////////////////////
 /// Helpers
 
-void swap(uint32_t array[], uint32_t a, uint32_t b) {
-  array[a] += array[b];
-  array[b] = array[a] - array[b];
-  array[a] -= array[b];
+void swap(uint32_t* a, uint32_t* b) {
+    uint32_t temp = *a;
+    *a = *b;
+    *b = temp;
 }
+
 
 void print_array(uint32_t array[]) {
   for (size_t i = 0; i < ArraySize; ++i) {
