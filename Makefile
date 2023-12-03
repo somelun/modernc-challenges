@@ -1,5 +1,5 @@
 build:
-	gcc -Wall ch3.c -o ch
+	gcc -Wall ch4.c -o ch
 
 run:
 	./ch
